@@ -19,6 +19,7 @@
 #include <asm/arch/sh_sdhi.h>
 #include <i2c.h>
 #include <mmc.h>
+#include <linux/delay.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -46,12 +47,27 @@ DECLARE_GLOBAL_DATA_PTR;
 #define PFC_PM37					(PFC_BASE + 0x16E)
 #define PFC_PMC37					(PFC_BASE + 0x237)
 
+
+#define PFC_P37                               (PFC_BASE + 0x037)
+#define PFC_PM37                              (PFC_BASE + 0x16E)
+#define PFC_PMC37                             (PFC_BASE + 0x237)
+
+/*P44_3*/
+#define PFC_P3C                               (PFC_BASE + 0x03C)
+#define PFC_PM3C                              (PFC_BASE + 0x178)
+#define PFC_PMC3C                             (PFC_BASE + 0x23C)
+/*P43_3*/
+#define PFC_P3B                               (PFC_BASE + 0x03B)
+#define PFC_PM3B                              (PFC_BASE + 0x176)
+#define PFC_PMC3B                             (PFC_BASE + 0x23B)
+
 void s_init(void)
 {
 	/* SD1 power control: P39_1 = 0; P39_2 = 1; */
 	*(volatile u32 *)(PFC_PMC37) &= 0xFFFFFFF9; /* Port func mode 0b00 */
 	*(volatile u32 *)(PFC_PM37) = (*(volatile u32 *)(PFC_PM37) & 0xFFFFFFC3) | 0x28; /* Port output mode 0b1010 */
-#if CONFIG_TARGET_SMARC_RZG2L
+//#if CONFIG_TARGET_SMARC_RZG2L
+#if CONFIG_TARGET_MYC_RZG2L
 	*(volatile u32 *)(PFC_P37) = (*(volatile u32 *)(PFC_P37) & 0xFFFFFFF9) | 0x6;	/* Port 39[2:1] output value 0b11*/
 #else
 
@@ -85,6 +101,21 @@ int board_init(void)
 {
 	/* adress of boot parameters */
 	gd->bd->bi_boot_params = CONFIG_SYS_TEXT_BASE + 0x50000;
+
+	// phy1 reset
+	*(volatile u32 *)(PFC_PMC3C) &= 0xFFFFFFF7; /* Port func mode  */
+	*(volatile u32 *)(PFC_PM3C) = (*(volatile u32 *)(PFC_PM3C) & 0xFFFFFF3F) | 0x80; /* Port output mode 0b10 */
+	/*value*/
+	*(volatile u32 *)(PFC_P3C) = (*(volatile u32 *)(PFC_P3C) & 0xFFFFFFF7) | 0x0;
+	mdelay(13);
+	*(volatile u32 *)(PFC_P3C) = (*(volatile u32 *)(PFC_P3C) & 0xFFFFFFF7) | 0x08;
+	// phy2 reset
+	*(volatile u32 *)(PFC_PMC3B) &= 0xFFFFFFFB; /* Port func mode  */
+	*(volatile u32 *)(PFC_PM3B) = (*(volatile u32 *)(PFC_PM3B) & 0xFFFFFF3F) | 0x80; /* Port output mode 0b10 */
+	/*value*/
+	*(volatile u32 *)(PFC_P3B) = (*(volatile u32 *)(PFC_P3B) & 0xFFFFFFF7) | 0x0;
+	mdelay(13);
+	*(volatile u32 *)(PFC_P3B) = (*(volatile u32 *)(PFC_P3B) & 0xFFFFFFF7) | 0x08;
 
 	return 0;
 }
