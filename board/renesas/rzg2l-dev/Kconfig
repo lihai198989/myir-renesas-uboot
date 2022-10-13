@@ -26,7 +26,7 @@ config SYS_VENDOR
 	default "renesas"
 
 config SYS_CONFIG_NAME
-	default "smarc-rzg2l"
+	default "aaasmarc-rzg2l"
 
 endif
 

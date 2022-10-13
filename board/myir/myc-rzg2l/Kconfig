@@ -1,0 +1,19 @@
+if TARGET_MYC_RZG2L 
+
+config SYS_SOC
+	default "rmobile"
+
+config SYS_BOARD
+	default "myc-rzg2l"
+
+config SYS_VENDOR
+	default "myir"
+
+config SYS_CONFIG_NAME
+	default "myc-rzg2l"
+
+endif
+
+config SYS_DDR4SIZE
+        hex "Size of DDR4"
+        default 0x80000000
