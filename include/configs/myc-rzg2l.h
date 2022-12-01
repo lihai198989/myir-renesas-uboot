@@ -66,13 +66,19 @@
 	"bootimage=unzip 0x4A080000 0x48080000; booti 0x48080000 - 0x48000000 \0" \
 	"loadaddr=0x48080000 \0" \
 	"fdtaddr=0x48000000 \0" \
+	"script=boot.scr\0" \
+	"image=Image\0" \
 	"fdt_file=" CONFIG_DEFAULT_FDT_FILE "\0" \
-	"mmcload=fatload  mmc 0:1 ${loadaddr} Image;fatload  mmc 0:1 ${fdtaddr}  myb-rzg2l-hdmi.dtb;run prodemmcbootargs \0" \
+	"mmcload=fatload  mmc 0:1 ${loadaddr} ${image};fatload  mmc 0:1 ${fdtaddr} ${fdt_file};run prodemmcbootargs \0" \
 	"emmcload=ext4load mmc 0:1 0x4A080000 boot/Image.gz;ext4load mmc 0:1 0x48000000 boot/r9a07g044l-smarc-rzg2l.dtb;run prodemmcbootargs \0" \
-	"sd1load=ext4load mmc 1:1 0x4A080000 boot/Image.gz;ext4load mmc 1:1 0x48000000 boot/r9a07g044l-smarc-rzg2l.dtb;run prodsdbootargs \0" \
-        "bootcmd_check=if mmc dev 0; then run mmcload; else run emmcload; fi \0"
+        "bootcmd_check=mmc dev 1;" \
+		"if fatload mmc 1  ${loadaddr}  ${script}; then " \
+			"source ${loadaddr};" \
+		"else " \
+			"mmc dev 0; run mmcload;" \
+		"fi;\0"
 
-#define CONFIG_BOOTCOMMAND	"env default -a;run bootcmd_check;run bootimage"
+#define CONFIG_BOOTCOMMAND	"run bootcmd_check;run bootimage"
 
 /* For board */
 /* Ethernet RAVB */
