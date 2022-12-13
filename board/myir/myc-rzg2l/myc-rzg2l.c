@@ -102,17 +102,27 @@ int board_init(void)
 	/* adress of boot parameters */
 	gd->bd->bi_boot_params = CONFIG_SYS_TEXT_BASE + 0x50000;
 
+	mdelay(140);
+
 	// phy1 reset
 	*(volatile u32 *)(PFC_PMC3C) &= 0xFFFFFFF7; /* Port func mode  */
 	*(volatile u32 *)(PFC_PM3C) = (*(volatile u32 *)(PFC_PM3C) & 0xFFFFFF3F) | 0x80; /* Port output mode 0b10 */
+
+	//mdelay(13);
+	*(volatile u32 *)(PFC_P3C) = (*(volatile u32 *)(PFC_P3C) & 0xFFFFFFF7) | 0x08; //high
+	mdelay(20);
 	/*value*/
-	*(volatile u32 *)(PFC_P3C) = (*(volatile u32 *)(PFC_P3C) & 0xFFFFFFF7) | 0x0;
+	*(volatile u32 *)(PFC_P3C) = (*(volatile u32 *)(PFC_P3C) & 0xFFFFFFF7) | 0x0; // low
 	mdelay(13);
-	*(volatile u32 *)(PFC_P3C) = (*(volatile u32 *)(PFC_P3C) & 0xFFFFFFF7) | 0x08;
+	*(volatile u32 *)(PFC_P3C) = (*(volatile u32 *)(PFC_P3C) & 0xFFFFFFF7) | 0x08; //high
+
+
 	// phy2 reset
 	*(volatile u32 *)(PFC_PMC3B) &= 0xFFFFFFFB; /* Port func mode  */
 	*(volatile u32 *)(PFC_PM3B) = (*(volatile u32 *)(PFC_PM3B) & 0xFFFFFF3F) | 0x80; /* Port output mode 0b10 */
-	/*value*/
+
+	*(volatile u32 *)(PFC_P3B) = (*(volatile u32 *)(PFC_P3B) & 0xFFFFFFF7) | 0x08;
+	mdelay(20);
 	*(volatile u32 *)(PFC_P3B) = (*(volatile u32 *)(PFC_P3B) & 0xFFFFFFF7) | 0x0;
 	mdelay(13);
 	*(volatile u32 *)(PFC_P3B) = (*(volatile u32 *)(PFC_P3B) & 0xFFFFFFF7) | 0x08;
