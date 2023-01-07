@@ -78,7 +78,7 @@
 			"mmc dev 0; run mmcload;" \
 		"fi;\0"
 
-#define CONFIG_BOOTCOMMAND	"run bootcmd_check;run bootimage"
+#define CONFIG_BOOTCOMMAND	"env default -a;run bootcmd_check;run bootimage"
 
 /* For board */
 /* Ethernet RAVB */
