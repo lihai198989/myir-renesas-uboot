@@ -1,0 +1,29 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Device Tree Source for the GR-Peach board
+ *
+ * Copyright (C) 2023 MYiR Electronics
+ */
+
+/dts-v1/;
+#include "myb-rzg2ul-base.dts"
+
+/ {
+	model = "smarc-rzg2ul";
+	compatible = "renesas,r9a07g043u", "renesas,rzg2ul";
+
+	aliases {
+		serial0 = &scif0;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+
+	memory@48000000 {
+		device_type = "memory";
+		/* first 64MB is reserved for secure area. */
+		reg = <0 0x48000000 0 0x1C000000>;
+	};
+
+};
