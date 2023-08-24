@@ -61,7 +61,7 @@
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"bootm_size=0x10000000 \0" \
-	"prodsdbootargs=setenv bootargs rw rootwait earlycon root=/dev/mmcblk0p2 \0" \
+	"prodsdbootargs=setenv bootargs rw rootwait earlycon root=/dev/mmcblk1p2 \0" \
 	"prodemmcbootargs=setenv bootargs rw rootwait earlycon loglevel=3 root=/dev/mmcblk0p2 \0" \
         "loadaddr=0x48080000 \0" \
 	"fdtaddr=0x48000000 \0" \
@@ -69,14 +69,14 @@
 	"script=boot.scr\0" \
 	"image=Image\0" \
 	"fdt_file=" CONFIG_DEFAULT_FDT_FILE "\0" \
-	"bootimage=unzip 0x4A080000 0x48080000; booti 0x48080000 - 0x48000000 \0" \
+	"bootimage=booti 0x48080000 - 0x48000000 \0" \
 	"emmcload=fatload mmc 0:1 ${loadaddr} ${image};fatload mmc 0:1 ${fdtaddr} ${fdt_file};run prodemmcbootargs \0" \
-	"sd1load=ext4load mmc 1:1 0x4A080000 boot/Image.gz;ext4load mmc 1:1 0x48000000 boot/r9a07g043u11-smarc.dts.dtb;run prodsdbootargs \0" \
+	"sdload=fatload mmc 1:1 0x48080000 Image;fatload mmc 1:1 0x48000000 myb-rzg2ul-disp.dtb;run prodsdbootargs \0" \
 	"bootcmd_check=mmc dev 1;" \
                 "if fatload mmc 1  ${loadaddr}  ${script}; then " \
 			"source ${loadaddr};" \
 		"else " \
-		        "mmc dev 0; run mmcload;" \
+		        "mmc dev 0; run emmcload;" \
 		"fi;\0"
 
 
