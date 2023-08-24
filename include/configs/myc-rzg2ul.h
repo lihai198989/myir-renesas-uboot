@@ -62,9 +62,10 @@
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"bootm_size=0x10000000 \0" \
 	"prodsdbootargs=setenv bootargs rw rootwait earlycon root=/dev/mmcblk0p2 \0" \
-	"prodemmcbootargs=setenv bootargs rw rootwait earlycon root=/dev/mmcblk0p2 \0" \
+	"prodemmcbootargs=setenv bootargs rw rootwait earlycon loglevel=3 root=/dev/mmcblk0p2 \0" \
         "loadaddr=0x48080000 \0" \
 	"fdtaddr=0x48000000 \0" \
+	"bootdelay=1 \0" \
 	"script=boot.scr\0" \
 	"image=Image\0" \
 	"fdt_file=" CONFIG_DEFAULT_FDT_FILE "\0" \
