@@ -36,6 +36,7 @@ DECLARE_GLOBAL_DATA_PTR;
 /* CPG */
 #define CPG_BASE					0x11010000
 #define CPG_CLKON_BASE				(CPG_BASE + 0x500)
+#define CPG_CLKMON_BASE                         (CPG_BASE + 0x680)
 #define CPG_RESET_BASE				(CPG_BASE + 0x800)
 #define CPG_RESET_ETH				(CPG_RESET_BASE + 0x7C)
 #define CPG_RESET_I2C                           (CPG_RESET_BASE + 0x80)
@@ -71,6 +72,7 @@ DECLARE_GLOBAL_DATA_PTR;
 #define PFC_PM1B                              (PFC_BASE + 0x136)
 #define PFC_PMC1BC                             (PFC_BASE + 0x21B)
 
+static void board_usb_init(void);
 void s_init(void)
 {
 	/* SD1 power control: P39_1 = 0; P39_2 = 1; */
