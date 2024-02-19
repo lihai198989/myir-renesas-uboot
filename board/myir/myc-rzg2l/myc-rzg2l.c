@@ -61,6 +61,16 @@ DECLARE_GLOBAL_DATA_PTR;
 #define PFC_PM3B                              (PFC_BASE + 0x176)
 #define PFC_PMC3B                             (PFC_BASE + 0x23B)
 
+/*P10*/
+#define PFC_P1A                               (PFC_BASE + 0x01A)
+#define PFC_PM1A                              (PFC_BASE + 0x134)
+#define PFC_PMC1AC                             (PFC_BASE + 0x21A)
+
+/*P11*/
+#define PFC_P1B                               (PFC_BASE + 0x01B)
+#define PFC_PM1B                              (PFC_BASE + 0x136)
+#define PFC_PMC1BC                             (PFC_BASE + 0x21B)
+
 void s_init(void)
 {
 	/* SD1 power control: P39_1 = 0; P39_2 = 1; */
@@ -134,3 +144,55 @@ void reset_cpu(void)
 {
 
 }
+
+int sdhi1_gpio(int num)
+{
+	if(num==0){
+		//P10
+       *(volatile u32 *)(PFC_PMC1AC) &= 0xFFFFFFFC; /* Port func mode  */
+       *(volatile u32 *)(PFC_PM1A) = (*(volatile u32 *)(PFC_PM1A) & 0xFFFFFFF0) | 0x0A; /* Port output mode 0b1010 */
+       *(volatile u32 *)(PFC_P1A) = (*(volatile u32 *)(PFC_P1A) & 0xFFFFFFFC) | 0x00;   //low
+       mdelay(5);
+       //P11
+       *(volatile u32 *)(PFC_PMC1BC) &= 0xFFFFFFFC; /* Port func mode  */
+       *(volatile u32 *)(PFC_PM1B) = (*(volatile u32 *)(PFC_PM1B) & 0xFFFFFFF0) | 0x0A; /* Port output mode 0b1010 */
+       *(volatile u32 *)(PFC_P1B) = (*(volatile u32 *)(PFC_P1B) & 0xFFFFFFFC) | 0x00;   //low
+	}else if(num==1){
+	   *(volatile u32 *)(PFC_PMC1AC) &= 0xFFFFFFFC; /* Port func mode  */
+       *(volatile u32 *)(PFC_PM1A) = (*(volatile u32 *)(PFC_PM1A) & 0xFFFFFFF0) | 0x0A; /* Port output mode 0b1010 */
+       *(volatile u32 *)(PFC_P1A) = (*(volatile u32 *)(PFC_P1A) & 0xFFFFFFFC) | 0x01;
+       mdelay(5);
+       //P11
+       *(volatile u32 *)(PFC_PMC1BC) &= 0xFFFFFFFC; /* Port func mode  */
+       *(volatile u32 *)(PFC_PM1B) = (*(volatile u32 *)(PFC_PM1B) & 0xFFFFFFF0) | 0x0A; /* Port output mode 0b1010 */
+       *(volatile u32 *)(PFC_P1B) = (*(volatile u32 *)(PFC_P1B) & 0xFFFFFFFC) | 0x01;   
+	}
+
+	return 0;
+}
+
+static int do_sdhiswitch(struct cmd_tbl *cmdtp, int flag, int argc,
+                         char *const argv[])
+{
+	int ret=0;
+
+	if (strcmp(argv[1], "sdcard") == 0) {
+		sdhi1_gpio(0);
+		printf("switch to sdcard\n");
+	}else if (strcmp(argv[1], "wifi") == 0) {
+		sdhi1_gpio(1);
+		printf("switch to wifi\n");
+	}else {
+		printf("sdhi not found \n");
+	}
+
+	return ret;
+}
+
+
+U_BOOT_CMD(
+      switch_sdhi1, 2, 1, do_sdhiswitch,
+       "sdhi1 switch",
+       ""
+);
+

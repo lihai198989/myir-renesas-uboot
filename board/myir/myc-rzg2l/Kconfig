@@ -12,7 +12,12 @@ config SYS_VENDOR
 config SYS_CONFIG_NAME
 	default "myc-rzg2l"
 
+
 endif
+
+config SYS_BOARDNAME 
+	string "MYS-RZG2L"
+	default "MYS-RZG2L"
 
 config SYS_DDR4SIZE
         hex "Size of DDR4"
