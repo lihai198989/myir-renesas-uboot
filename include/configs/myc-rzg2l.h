@@ -70,7 +70,7 @@
 	"script=boot.scr\0" \
 	"image=Image\0" \
 	"board_name=" CONFIG_SYS_BOARDNAME "\0" \
-	"sdhi_sw=if test $board_name = MYS-RZG2L ; then switch_sdhi1 sdcard; fi \0" \
+	"sdhi_sw=if test $board_name = MYS-RZG2L ; then switch_sdhi1 wifi; fi \0" \
 	"fdt_file=" CONFIG_DEFAULT_FDT_FILE "\0" \
 	"mmcload=fatload  mmc 0:1 ${loadaddr} ${image};fatload  mmc 0:1 ${fdtaddr} ${fdt_file};run prodemmcbootargs \0" \
 	"emmcload=ext4load mmc 0:1 0x4A080000 boot/Image.gz;ext4load mmc 0:1 0x48000000 boot/r9a07g044l-smarc-rzg2l.dtb;run prodemmcbootargs \0" \
