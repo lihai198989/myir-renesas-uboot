@@ -61,27 +61,30 @@
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"bootm_size=0x10000000 \0" \
-	"prodsdbootargs=setenv bootargs rw rootwait earlycon root=/dev/mmcblk1p2 \0" \
-	"prodemmcbootargs=setenv bootargs rw rootwait earlycon loglevel=3 root=/dev/mmcblk0p2 \0" \
-	"bootimage=unzip 0x4A080000 0x48080000; booti 0x48080000 - 0x48000000 \0" \
+	"mmcdev=0 \0" \
+	"bootpart=1 \0" \
+	"rootpart=2 \0" \
+	"prodmmcbootargs=setenv bootargs rw rootwait earlycon root=/dev/mmcblk${mmcdev}p${rootpart} \0" \
+	"bootimage=booti 0x48080000 - 0x48000000 \0" \
 	"loadaddr=0x48080000 \0" \
 	"fdtaddr=0x48000000 \0" \
-	 "bootdelay=1 \0" \
+	"bootdelay=1 \0" \
 	"script=boot.scr\0" \
 	"image=Image\0" \
 	"board_name=" CONFIG_SYS_BOARDNAME "\0" \
-	"sdhi_sw=if test $board_name = MYS-RZG2L ; then switch_sdhi1 wifi; fi \0" \
+	"sdhi_sw=if test \"${board_name}\" = \"MYS-RZG2L\" ; then switch_sdhi1 wifi; fi \0" \
 	"fdt_file=" CONFIG_DEFAULT_FDT_FILE "\0" \
-	"mmcload=fatload  mmc 0:1 ${loadaddr} ${image};fatload  mmc 0:1 ${fdtaddr} ${fdt_file};run prodemmcbootargs \0" \
-	"emmcload=ext4load mmc 0:1 0x4A080000 boot/Image.gz;ext4load mmc 0:1 0x48000000 boot/r9a07g044l-smarc-rzg2l.dtb;run prodemmcbootargs \0" \
-        "bootcmd_check=mmc dev 1;" \
-		"if fatload mmc 1  ${loadaddr}  ${script}; then " \
-			"source ${loadaddr};" \
+	"mmcload=fatload mmc ${mmcdev}:${bootpart} ${loadaddr} ${image};fatload mmc ${mmcdev}:${bootpart} ${fdtaddr} ${fdt_file};run prodmmcbootargs \0" \
+        "bootselect=mmc dev 1;" \
+		"if fatload mmc 1:${bootpart} ${loadaddr} ${script}; then " \
+			"setenv mmcdev 1;" \
 		"else " \
-			"mmc dev 0; run mmcload;" \
-		"fi;\0"
+			"setenv mmcdev 0;" \
+		"fi;\0" \
+	"altbootcmd=run sdhi_sw; setenv mmcdev 0; run mmcload; run bootimage \0"
 
-#define CONFIG_BOOTCOMMAND	"run sdhi_sw; run bootcmd_check;run bootimage"
+
+#define CONFIG_BOOTCOMMAND		"run sdhi_sw; run bootselect; run mmcload; run bootimage"
 
 /* For board */
 /* Ethernet RAVB */
